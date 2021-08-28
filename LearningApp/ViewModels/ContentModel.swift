@@ -20,8 +20,13 @@ class ContentModel:ObservableObject{
     @Published var currentLesson:Lesson? //optional
     var currentLessonIndex=0
     
+    //current lesson explanation
+    @Published var lessonDescription = NSAttributedString()
     //nil to begin with
     var styleData:Data?
+    
+    //Current selected content and test
+    @Published var currentContentSelected:Int?
     
     init(){
         getLocalData()
@@ -82,6 +87,7 @@ class ContentModel:ObservableObject{
         }
         //set the current lesson
         currentLesson = currentModule!.content.lessons[currentLessonIndex]
+        lessonDescription = addStyling(htmlString: currentLesson!.explanation)
     }
     func nextLesson(){
         //advance to next lesson index
@@ -90,6 +96,7 @@ class ContentModel:ObservableObject{
         if (currentLessonIndex < currentModule!.content.lessons.count) {
             //set the curent lesson property
             currentLesson = currentModule!.content.lessons[currentLessonIndex]
+            lessonDescription = addStyling(htmlString: currentLesson!.explanation)
         }
         else{
             //reset the lesson state
@@ -100,5 +107,22 @@ class ContentModel:ObservableObject{
     
     func hasNextLesson()->Bool{
         return (currentLessonIndex + 1 < currentModule!.content.lessons.count)
+    }
+    //MARK: code styling
+    private func addStyling(htmlString: String) -> NSAttributedString{
+        var resultString = NSAttributedString()
+        var data = Data()
+        //add styling data
+        if styleData != nil{
+            data.append(self.styleData!)
+        }
+        //add html data
+        data.append(Data(htmlString.utf8))
+        //convert to attributed string
+        if let attributedString = try? NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil){
+            resultString = attributedString
+        }
+       
+        return resultString
     }
 }

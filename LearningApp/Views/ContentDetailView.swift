@@ -21,8 +21,8 @@ struct ContentDetailView: View {
             if url != nil{
                 VideoPlayer(player: AVPlayer(url: url!)).cornerRadius(10)
             }
-            //TO DO: description
-            
+            //description
+            CodeTextView()
             //next lesson button
             //show next lesson only if there is a next lesson
             if model.hasNextLesson(){
@@ -31,9 +31,22 @@ struct ContentDetailView: View {
                     model.nextLesson()
                 }, label: {
                     ZStack{
-                        Rectangle().foregroundColor(Color.green).cornerRadius(10).shadow(radius: 5).frame(height:48)
+                        RectangleCard(color: .green).frame(height:48)
                         Text("Next Lesson: \(model.currentModule!.content.lessons[model.currentLessonIndex+1].title)").bold().foregroundColor(Color.white)
-                    }.padding()
+                    }.padding().navigationBarTitle(lesson?.title ?? "")
+                    
+                })
+            }
+            else{
+                //show complete button instead
+                Button(action: {
+                    //take user back to homeView
+                    model.currentContentSelected=nil
+                }, label: {
+                    ZStack{
+                        RectangleCard(.green).frame(height:48)
+                        Text("Complete").bold().foregroundColor(Color.white)
+                    }.padding().navigationBarTitle(lesson?.title ?? "")
                     
                 })
             }
