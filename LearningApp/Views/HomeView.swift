@@ -31,9 +31,20 @@ struct HomeView: View {
                                     label: {
                                         HomeViewRow(image: module.content.image, title: "Learn \(module.category)", description: module.content.description, count:"\(module.content.lessons.count)  lessons", time: module.content.time)
                                     })
-                           
-                            //test card
-                            HomeViewRow(image: module.test.image, title: "Test \(module.category)", description: module.test.description, count:"\(module.test.questions.count)  questions", time: module.test.time)
+                           NavigationLink(
+                            destination: TestView().onAppear(perform: {
+                                model.beginTest(moduleId: module.id)
+                            }),
+                            tag: module.id,
+                            selection: $model.currentTestSelected,
+                            label: {
+                                //test card
+                                HomeViewRow(image: module.test.image, title: "Test \(module.category)", description: module.test.description, count:"\(module.test.questions.count)  questions", time: module.test.time)
+                            })
+                                //to fix bug
+                            NavigationLink(destination: EmptyView()){
+                                EmptyView()
+                            }
                             }
                         }
                     }.accentColor(.black).padding()

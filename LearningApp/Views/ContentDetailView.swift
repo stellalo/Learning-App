@@ -44,7 +44,7 @@ struct ContentDetailView: View {
                     model.currentContentSelected=nil
                 }, label: {
                     ZStack{
-                        RectangleCard(.green).frame(height:48)
+                        RectangleCard(color: .green).frame(height:48)
                         Text("Complete").bold().foregroundColor(Color.white)
                     }.padding().navigationBarTitle(lesson?.title ?? "")
                     

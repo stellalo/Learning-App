@@ -20,13 +20,18 @@ class ContentModel:ObservableObject{
     @Published var currentLesson:Lesson? //optional
     var currentLessonIndex=0
     
+    //current question
+    @Published var currentQuestion:Question?
+    var currentQuestionIndex = 0
+    
     //current lesson explanation
-    @Published var lessonDescription = NSAttributedString()
+    @Published var codeText = NSAttributedString()
     //nil to begin with
     var styleData:Data?
     
     //Current selected content and test
     @Published var currentContentSelected:Int?
+    @Published var currentTestSelected:Int?
     
     init(){
         getLocalData()
@@ -87,7 +92,7 @@ class ContentModel:ObservableObject{
         }
         //set the current lesson
         currentLesson = currentModule!.content.lessons[currentLessonIndex]
-        lessonDescription = addStyling(htmlString: currentLesson!.explanation)
+        codeText = addStyling(htmlString: currentLesson!.explanation)
     }
     func nextLesson(){
         //advance to next lesson index
@@ -96,7 +101,7 @@ class ContentModel:ObservableObject{
         if (currentLessonIndex < currentModule!.content.lessons.count) {
             //set the curent lesson property
             currentLesson = currentModule!.content.lessons[currentLessonIndex]
-            lessonDescription = addStyling(htmlString: currentLesson!.explanation)
+            codeText = addStyling(htmlString: currentLesson!.explanation)
         }
         else{
             //reset the lesson state
@@ -108,6 +113,20 @@ class ContentModel:ObservableObject{
     func hasNextLesson()->Bool{
         return (currentLessonIndex + 1 < currentModule!.content.lessons.count)
     }
+    
+    func beginTest(moduleId: Int){
+        //set the current module
+        beginModule(moduleId: moduleId)
+        //set the current question
+        currentQuestionIndex = 0
+        //if there are questions, set the current question to the first one
+        if currentModule?.test.questions.count ?? 0 > 0{
+            currentQuestion = currentModule!.test.questions[currentQuestionIndex]
+            //set the content question
+            codeText = addStyling(htmlString: currentQuestion!.content)
+        }
+    }
+    
     //MARK: code styling
     private func addStyling(htmlString: String) -> NSAttributedString{
         var resultString = NSAttributedString()
