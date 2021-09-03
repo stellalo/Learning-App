@@ -34,12 +34,13 @@ class ContentModel:ObservableObject{
     @Published var currentTestSelected:Int?
     
     init(){
+        //parse locally included json data
         getLocalData()
+        //download remote json data and parse
+        getRemoteData()
     }
     
     //MARK: data methods
-    
-   
     
     func getLocalData(){
         //get a url to the json file
@@ -67,6 +68,42 @@ class ContentModel:ObservableObject{
         catch{
             print("Couldn't parse style data")
         }
+    }
+    
+    func getRemoteData(){
+        //string path
+        let urlString = "https://stellalo.github.io/Learning-App-Data/data2.json"
+        //create a url object
+        let url = URL(string: urlString)
+        guard url !=  nil else{
+            //couldn't create url
+            return
+        }
+        //create a url request
+        let Request = URLRequest(url:url!)
+        //get the session and kick off the task
+        let session = URLSession.shared
+        let dataTask =  session.dataTask(with: Request) { data, response, error in
+            //check if there is an error
+            guard error == nil else {
+                //there was an error
+                return
+            }
+            do{
+                //create json decoder
+                let decoder = JSONDecoder()
+                //decode
+                let modules = try decoder.decode([Module].self, from: data!)
+                //append parsed modules into Module property
+                self.modules += modules
+            }
+            catch{
+                
+            }
+            
+        }
+        //kick off data task
+        dataTask.resume()
     }
     
     //MARK: module navigation methods
