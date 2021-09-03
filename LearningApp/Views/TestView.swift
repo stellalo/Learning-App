@@ -59,17 +59,28 @@ struct TestView: View {
                 }
                 //button to complete quiz or submit answer
                 Button{
-                    //change submitted state to true
-                    submitted = true
-                    //check answer and increment counter if correct
-                    if selectedAnswerIndex == model.currentQuestion!.correctIndex{
-                        numCorrect+=1
+                    //check if answer has been submitted
+                    if submitted == true {
+                        //answer has already been submitted, move to next question
+                        model.nextQuestion()
+                        //Reset properties
+                        submitted = false
+                        selectedAnswerIndex = nil
+                    }
+                    else{
+                        //Submit the answer
+                        //change submitted state to true
+                        submitted = true
+                        //check answer and increment counter if correct
+                        if selectedAnswerIndex == model.currentQuestion!.correctIndex{
+                            numCorrect+=1
+                        }
                     }
                 }label: {
                     ZStack{
                         
                         RectangleCard(color: .green).frame(height: 48)
-                        Text("Submit").bold().foregroundColor(.white)
+                        Text(buttonText).bold().foregroundColor(.white)
                     }.padding()
                 }.disabled(selectedAnswerIndex == nil)
             }.navigationBarTitle("\(model.currentModule?.category ?? "") Test")
@@ -77,6 +88,21 @@ struct TestView: View {
         else{
             //test hasn't loaded yet
             ProgressView()
+        }
+    }
+    var buttonText: String{
+        //check if answer has been submitted
+        if submitted == true{
+            if (model.currentQuestionIndex+1 == model.currentModule!.test.questions.count){
+                //this is the last question
+                return "Finish"
+            }
+            else{
+                return "Next"
+            }
+        }
+        else{
+            return "Submit"
         }
     }
 }
