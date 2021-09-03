@@ -78,7 +78,6 @@ struct TestView: View {
                     }
                 }label: {
                     ZStack{
-                        
                         RectangleCard(color: .green).frame(height: 48)
                         Text(buttonText).bold().foregroundColor(.white)
                     }.padding()
@@ -87,7 +86,9 @@ struct TestView: View {
         }
         else{
             //test hasn't loaded yet
-            ProgressView()
+           // ProgressView()
+            //if current question is nil, show result view
+            TestResultView(numCorrect: numCorrect)
         }
     }
     var buttonText: String{

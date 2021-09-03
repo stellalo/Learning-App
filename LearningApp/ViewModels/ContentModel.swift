@@ -138,8 +138,8 @@ class ContentModel:ObservableObject{
         }
         else{
             //if not then reset the properties
-            currentQuestionIndex = 0
             currentQuestion = nil
+            currentQuestionIndex = 0
         }
     }
     
