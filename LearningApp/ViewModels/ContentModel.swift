@@ -95,7 +95,9 @@ class ContentModel:ObservableObject{
                 //decode
                 let modules = try decoder.decode([Module].self, from: data!)
                 //append parsed modules into Module property
-                self.modules += modules
+                DispatchQueue.main.async {
+                    self.modules += modules
+                }
             }
             catch{
                 

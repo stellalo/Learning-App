@@ -13,9 +13,10 @@ struct TestView: View {
     @State var selectedAnswerIndex:Int?
     @State var numCorrect = 0
     @State var submitted = false
+    @State var showResult = false
     
     var body: some View {
-        if model.currentQuestion != nil {
+        if model.currentQuestion != nil && showResult == false {
             VStack(alignment: .leading){
                 //Question number
                 Text("Question \(model.currentQuestionIndex + 1) of \(model.currentModule?.test.questions.count ?? 0 )").padding(.leading, 20)
@@ -61,11 +62,17 @@ struct TestView: View {
                 Button{
                     //check if answer has been submitted
                     if submitted == true {
-                        //answer has already been submitted, move to next question
-                        model.nextQuestion()
-                        //Reset properties
-                        submitted = false
-                        selectedAnswerIndex = nil
+                        if (model.currentQuestionIndex+1 == model.currentModule!.test.questions.count){
+                            //show results
+                            showResult = true
+                        }
+                        else{
+                            //answer has already been submitted, move to next question
+                            model.nextQuestion()
+                            //Reset properties
+                            submitted = false
+                            selectedAnswerIndex = nil
+                        }
                     }
                     else{
                         //Submit the answer
